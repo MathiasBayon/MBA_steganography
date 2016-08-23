@@ -29,10 +29,12 @@ RSpec.describe Image do
             message = "Test message"
             @image.cypher(message)
             message_as_binary_array_with_leading_zero = message.split("").map{|char| char.ord.to_s(2).rjust(9,"0").scan(/.{1,3}/)}
-            (0..message_as_binary_array_with_leading_zero.length).step(3) do |i|
-                expect(@image.pixels[[i,0]].r.to_s(2).rjust(8,"0")[7]).to eq message_as_binary_array_with_leading_zero[i]
-                expect(@image.pixels[[i+1,0]].g.to_s(2).rjust(8,"0")[7]).to eq message_as_binary_array_with_leading_zero[i+1]
-                expect(@image.pixels[[i+1,0]].b.to_s(2).rjust(8,"0")[7]).to eq message_as_binary_array_with_leading_zero[i+1]
+            for i in (0..message_as_binary_array_with_leading_zero.length) do
+                for j in (0..message_as_binary_array_with_leading_zero[i].length)
+                    expect(@image.pixels[[i,0]].r.to_s(2).rjust(8,"0")[7]).to eq message_as_binary_array_with_leading_zero[i][j][0]
+                    expect(@image.pixels[[i+1,0]].g.to_s(2).rjust(8,"0")[7]).to eq message_as_binary_array_with_leading_zero[i][j][1]
+                    expect(@image.pixels[[i+1,0]].b.to_s(2).rjust(8,"0")[7]).to eq message_as_binary_array_with_leading_zero[i][j][2]
+                end
             end
         end
 

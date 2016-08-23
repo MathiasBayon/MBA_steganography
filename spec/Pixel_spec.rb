@@ -5,8 +5,9 @@ require_relative '../Pixel'
 RSpec.describe Pixel do
     describe "Initialization" do
         it "should fail if RGB components are not positive and <= 255 integers" do
-            expect(Pixel.new(-1, -1, -1)).to raise_exception
-            expect(Pixel.new(256, 256, 256)).to raise_exception
+            expect(Pixel.new("a", "b", "c")).to raise_error(TypeError)
+            expect(Pixel.new(-1, -1, -1)).to raise_error(ArgumentError)
+            expect(Pixel.new(256, 256, 256)).to raise_error(ArgumentError)
         end
 
         it "Should have valid RGB components" do
@@ -44,7 +45,7 @@ RSpec.describe Pixel do
             @pixel.store("010")
             expect(@pixel.r.to_s(2).rjust(8, "0")).to eq "11111110"
             expect(@pixel.g.to_s(2).rjust(8, "0")).to eq "11111111"
-            expect(@pixel.b.to_s(2).rjust(8, "0")).to eq "11111101"
+            expect(@pixel.b.to_s(2).rjust(8, "0")).to eq "11111100"
             @pixel.store("011")
             expect(@pixel.r.to_s(2).rjust(8, "0")).to eq "11111110"
             expect(@pixel.g.to_s(2).rjust(8, "0")).to eq "11111111"
@@ -60,7 +61,7 @@ RSpec.describe Pixel do
             @pixel.store("110")
             expect(@pixel.r.to_s(2).rjust(8, "0")).to eq "11111111"
             expect(@pixel.g.to_s(2).rjust(8, "0")).to eq "11111111"
-            expect(@pixel.b.to_s(2).rjust(8, "0")).to eq "11111110"
+            expect(@pixel.b.to_s(2).rjust(8, "0")).to eq "11111100"
             @pixel.store("111")
             expect(@pixel.r.to_s(2).rjust(8, "0")).to eq "11111111"
             expect(@pixel.g.to_s(2).rjust(8, "0")).to eq "11111111"
