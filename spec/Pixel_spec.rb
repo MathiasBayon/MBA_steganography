@@ -5,9 +5,9 @@ require_relative '../Pixel'
 RSpec.describe Pixel do
     describe "Initialization" do
         it "should fail if RGB components are not positive and <= 255 integers" do
-            expect(Pixel.new("a", "b", "c")).to raise_error(TypeError)
-            expect(Pixel.new(-1, -1, -1)).to raise_error(ArgumentError)
-            expect(Pixel.new(256, 256, 256)).to raise_error(ArgumentError)
+            expect{Pixel.new("a", "b", "c")}.to raise_error(TypeError)
+            expect{Pixel.new(-1, -1, -1)}.to raise_error(ArgumentError)
+            expect{Pixel.new(256, 256, 256)}.to raise_error(ArgumentError)
         end
 
         it "Should have valid RGB components" do
@@ -20,6 +20,15 @@ RSpec.describe Pixel do
             expect(@pixel.r.to_s(2).rjust(8, "0")).to eq "11111110"
             expect(@pixel.g.to_s(2).rjust(8, "0")).to eq "11111110"
             expect(@pixel.b.to_s(2).rjust(8, "0")).to eq "11111100"
+        end
+
+        it "Should allow original value reseting" do
+            pixel = Pixel.new(255, 254, 253)
+            pixel.r = 10
+            pixel.g = 10
+            pixel.b = 10
+            pixel.reset
+            expect(pixel).to eql(Pixel.new(255, 254, 253))
         end
     end
 
@@ -38,34 +47,42 @@ RSpec.describe Pixel do
             expect(@pixel.r.to_s(2).rjust(8, "0")).to eq "11111110"
             expect(@pixel.g.to_s(2).rjust(8, "0")).to eq "11111110"
             expect(@pixel.b.to_s(2).rjust(8, "0")).to eq "11111100"
+            @pixel.reset
             @pixel.store("001")
             expect(@pixel.r.to_s(2).rjust(8, "0")).to eq "11111110"
             expect(@pixel.g.to_s(2).rjust(8, "0")).to eq "11111110"
             expect(@pixel.b.to_s(2).rjust(8, "0")).to eq "11111101"
+            @pixel.reset
             @pixel.store("010")
             expect(@pixel.r.to_s(2).rjust(8, "0")).to eq "11111110"
             expect(@pixel.g.to_s(2).rjust(8, "0")).to eq "11111111"
             expect(@pixel.b.to_s(2).rjust(8, "0")).to eq "11111100"
+            @pixel.reset
             @pixel.store("011")
             expect(@pixel.r.to_s(2).rjust(8, "0")).to eq "11111110"
             expect(@pixel.g.to_s(2).rjust(8, "0")).to eq "11111111"
             expect(@pixel.b.to_s(2).rjust(8, "0")).to eq "11111101"
+            @pixel.reset
             @pixel.store("100")
             expect(@pixel.r.to_s(2).rjust(8, "0")).to eq "11111111"
             expect(@pixel.g.to_s(2).rjust(8, "0")).to eq "11111110"
             expect(@pixel.b.to_s(2).rjust(8, "0")).to eq "11111100"
+            @pixel.reset
             @pixel.store("101")
             expect(@pixel.r.to_s(2).rjust(8, "0")).to eq "11111111"
             expect(@pixel.g.to_s(2).rjust(8, "0")).to eq "11111110"
             expect(@pixel.b.to_s(2).rjust(8, "0")).to eq "11111101"
+            @pixel.reset
             @pixel.store("110")
             expect(@pixel.r.to_s(2).rjust(8, "0")).to eq "11111111"
             expect(@pixel.g.to_s(2).rjust(8, "0")).to eq "11111111"
             expect(@pixel.b.to_s(2).rjust(8, "0")).to eq "11111100"
+            @pixel.reset
             @pixel.store("111")
             expect(@pixel.r.to_s(2).rjust(8, "0")).to eq "11111111"
             expect(@pixel.g.to_s(2).rjust(8, "0")).to eq "11111111"
             expect(@pixel.b.to_s(2).rjust(8, "0")).to eq "11111101"
+            @pixel.reset
         end
     end
 end

@@ -1,6 +1,7 @@
 # @author Mathias Bayon
 
 require_relative '../Image'
+require 'spec_helper'
 
 RSpec.describe Image do
     before(:each) do
@@ -24,7 +25,8 @@ RSpec.describe Image do
         end
     end
 
-     describe "Methods" do
+     describe "Methods", :type => :aruba do
+        let(:res_filename) { "./spec/res.png" }
         it "Should allow message cyphering within it" do
             message = "Test message"
             @image.cypher(message)
@@ -39,10 +41,10 @@ RSpec.describe Image do
         end
 
         it "Should be able to write itelf in another file" do
-            expect("./spec/res.png").not_to be_an_existing_file
-            @image.write("./spec/res")
-            expect("./spec/res.png").to be_an_existing_file
-            File.delete("./spec/res.png")
+            expect(File.exists? res_filename).not_to be true
+            @image.write(res_filename.sub(".png", ""))
+            expect(File.exists? res_filename).to be true
+            File.delete(res_filename)
         end
     end
 end

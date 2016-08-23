@@ -1,14 +1,14 @@
 require 'chunky_png'
 
 class Pixel
-    attr_accessor :r, :g, :b
+    attr_accessor :r, :g, :b, :original_r, :original_g, :original_b
 
     def initialize(r, g, b)
         raise TypeError, "<r>, <g> and <b> must be positive integers" unless ((r.is_a? Numeric) && (g.is_a? Numeric) && (b.is_a? Numeric))
         raise ArgumentError, "<r>, <g> and <b> must be positive integers" unless r >=0 && r <= 255 && g >=0 && g <= 255 && b >=0 && b<= 255
-        @r = r
-        @g = g 
-        @b = b
+        @r = @original_r = r
+        @g = @original_g = g 
+        @b = @original_b = b
         self.compress_all
     end
 
@@ -25,7 +25,7 @@ class Pixel
     end
 
     def eql?(pixel)
-        ((@r == pixel.r) && (@g == pixel.g) && (@b == pixel.r))
+        ((@r == pixel.r) && (@g == pixel.g) && (@b == pixel.b)) && ((@original_r == pixel.original_r) && (@original_g == pixel.original_g) && (@original_b == pixel.original_b))
     end
 
     def ==(pixel)
@@ -35,7 +35,14 @@ class Pixel
     def store(three_bits_as_string)
         @r += 1 if three_bits_as_string[0] == "1"
         @g += 1 if three_bits_as_string[1] == "1"
-        @b += 1  if three_bits_as_string[2] == "1"
+        @b += 1 if three_bits_as_string[2] == "1"
+    end
+
+    def reset
+        @r = @original_r
+        @g = @original_g
+        @b = @original_b
+        self.compress_all
     end
 
     protected
