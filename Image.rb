@@ -43,6 +43,26 @@ class Image
         self
     end
 
+    def decypher(length=0) #Fix this
+        Trace::get_logger.info('Image.cypher') { "Decyphering message..." }
+        
+        res_b = res_s = ""
+
+        for x in (0...@width)
+            for y in (0...@height)
+                res_b += @pixels[[x,y]].r.to_s(2).rjust(8, "0")[7]
+                res_b += @pixels[[x,y]].g.to_s(2).rjust(8, "0")[7]
+                res_b += @pixels[[x,y]].b.to_s(2).rjust(8, "0")[7]
+            end
+        end
+
+        for i in (0...res_b.length).step(8)
+            res_s += [res_b[i..i+7]].pack("b*")
+        end
+        
+        res_s
+    end
+
     def write(output_filename)
         Trace::get_logger.info('Image.write') { "Writing output file..." }
         output_file = ChunkyPNG::Image.new(@width, @height, ChunkyPNG::Color::TRANSPARENT)

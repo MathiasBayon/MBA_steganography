@@ -75,6 +75,13 @@ RSpec.describe Image do
             end
         end
 
+        it "Should allow message decyphering" do
+            message = Messages::get["rspec"]["test_message"]
+            @image.cypher(message)
+            message = @image.decypher
+            $stderr.puts (message) #TODO
+        end
+
         it "Should be able to write itelf in another file" do
             res_filename = Messages::get["rspec"]["test_result_image_full_path"]
             File.delete(res_filename) if File.exists? res_filename
