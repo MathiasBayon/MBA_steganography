@@ -6,10 +6,21 @@ require 'YAML'
 
 # Properties singleton class
 class Messages
-
     # Returns properties.yaml messages
     def self.get()
         @@messages ||= YAML.load_file("./spec/properties.yaml")
+    end
+end
+
+class ChunkyPNG::Image
+    def self.get_random_image(image_width, image_height)
+        png = ChunkyPNG::Image.new(image_width, image_height, ChunkyPNG::Color::TRANSPARENT)
+        for x in (0...image_height)
+            for y in (0...image_height)
+                png[x,y] = ChunkyPNG::Color.rgba(Random.new.rand(0..255), Random.new.rand(0..255), Random.new.rand(0..255), 255)
+            end
+        end
+        png
     end
 end
 
@@ -20,12 +31,7 @@ RSpec.describe Image do
         image_width = Messages::get["rspec"]["test_source_image_width"]
 
         unless File.exists? test_filename
-            png = ChunkyPNG::Image.new(image_width, image_height, ChunkyPNG::Color::TRANSPARENT)
-            for x in (0...image_height)
-                for y in (0...image_height)
-                    png[x,y] = ChunkyPNG::Color.rgba(Random.new.rand(0..255), Random.new.rand(0..255), Random.new.rand(0..255), 255)
-                end
-            end
+            png = ChunkyPNG::Image.get_random_image(image_width, image_height)
             png.save(test_filename, :interlace => true)
         end
         @image = Image.new(test_filename)
