@@ -2,10 +2,33 @@
 
 require_relative '../Image'
 require 'spec_helper'
+require 'YAML'
+
+# Properties singleton class
+class Messages
+
+    # Returns properties.yaml messages
+    def self.get()
+        @@messages ||= YAML.load_file("./spec/properties.yaml")
+    end
+end
 
 RSpec.describe Image do
-    before(:each) do
-        @image = Image.new("./spec/test.png")
+    before(:all) do
+        test_filename = Messages::get["rspec"]["test_source_image_full_path"]
+        image_height = Messages::get["rspec"]["test_source_image_height"]
+        image_width = Messages::get["rspec"]["test_source_image_width"]
+
+        unless File.exists? test_filename
+            png = ChunkyPNG::Image.new(image_width, image_height, ChunkyPNG::Color::TRANSPARENT)
+            for x in (0...image_height)
+                for y in (0...image_height)
+                    png[x,y] = ChunkyPNG::Color.rgba(Random.new.rand(0..255), Random.new.rand(0..255), Random.new.rand(0..255), 255)
+                end
+            end
+            png.save(test_filename, :interlace => true)
+        end
+        @image = Image.new(test_filename)
     end
 
     describe "Initialization" do
@@ -26,7 +49,6 @@ RSpec.describe Image do
     end
 
      describe "Methods", :type => :aruba do
-        let(:res_filename) { "./spec/res.png" }
         it "Should allow message cyphering within it" do
             message = "Test message"
             @image.cypher(message)
@@ -41,10 +63,10 @@ RSpec.describe Image do
         end
 
         it "Should be able to write itelf in another file" do
-            expect(File.exists? res_filename).not_to be true
+            res_filename = Messages::get["rspec"]["test_result_image_full_path"]
+            File.delete(res_filename) if File.exists? res_filename
             @image.write(res_filename.sub(".png", ""))
             expect(File.exists? res_filename).to be true
-            File.delete(res_filename)
         end
     end
 end

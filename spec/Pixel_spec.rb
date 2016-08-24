@@ -32,7 +32,7 @@ RSpec.describe Pixel do
         end
     end
 
-    before(:each) do
+    before(:all) do
         @pixel = Pixel.new(255, 254, 253)
     end
 
