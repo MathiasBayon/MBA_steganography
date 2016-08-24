@@ -40,6 +40,7 @@ class Image
                 y+=1
             end
         end
+        self
     end
 
     def write(output_filename)

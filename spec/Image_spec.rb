@@ -68,7 +68,7 @@ RSpec.describe Image do
             message = Messages::get["rspec"]["test_message"]
             @image.cypher(message)
             message_as_binary_array_with_leading_zero = Image::get_message_as_binary_array_with_leading_zeros(message)
-            for i in (0..message_as_binary_array_with_leading_zero.length) do
+            for i in (0...message_as_binary_array_with_leading_zero.length) do
                 expect(@image.pixels[[i,0]].r.to_s(2).rjust(8,"0")[7]).to eq message_as_binary_array_with_leading_zero[i][0]
                 expect(@image.pixels[[i,0]].g.to_s(2).rjust(8,"0")[7]).to eq message_as_binary_array_with_leading_zero[i][1]
                 expect(@image.pixels[[i,0]].b.to_s(2).rjust(8,"0")[7]).to eq message_as_binary_array_with_leading_zero[i][2]
