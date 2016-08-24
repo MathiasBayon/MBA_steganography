@@ -55,6 +55,15 @@ RSpec.describe Image do
     end
 
      describe "Methods", :type => :aruba do
+        it "Should raise an error if the message to cypher cannot be store within the image" do
+            short_message = (0..255).map { ('a'..'z').to_a[rand(26)] }.join
+            long_message = (0..250000).map { ('a'..'z').to_a[rand(26)] }.join
+
+            # invoke the private method
+            expect(@image.instance_eval{ is_big_enough_to_store_message?(long_message) }).to be false
+            expect(@image.instance_eval{ is_big_enough_to_store_message?(short_message) }).to be true
+        end
+
         it "Should allow message cyphering within it" do
             message = "Test message"
             @image.cypher(message)
