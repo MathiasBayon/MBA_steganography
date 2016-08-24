@@ -34,7 +34,8 @@ class Image
 
         Image::get_message_as_binary_array_with_leading_zeros(message).each do |chunk|
             @pixels[[x,y]].store(chunk)
-            if (x == @width-1)
+            x += 1
+            if (x == @width)
                 x=0
                 y+=1
             end
