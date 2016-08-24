@@ -28,9 +28,11 @@ class Image
 
     def cypher(message)
         Trace::get_logger.info('Image.cypher') { "Cyphering message..." }
+        raise ArgumentError, "Input file is not big enough to store message" unless is_big_enough_to_store_message?(message)
         x = y = 0
-        message_as_binary_array_with_leading_zero = message.split("").map{|char| char.ord.to_s(2).rjust(9,"0").scan(/.{1,3}/)}
-        message_as_binary_array_with_leading_zero.each do |chunk|
+        message.split("").map{|char| char.ord.to_s(2).rjust(9,"0").scan(/.{1,3}/)}
+
+        Image::get_message_as_binary_array_with_leading_zeros(message).each do |chunk|
             @pixels[[x,y]].store(chunk)
             if (x == @width-1)
                 x=0
@@ -55,6 +57,15 @@ class Image
     end
 
     private
+
+    def self.get_message_as_binary_array_with_leading_zeros(message)
+        message.split("").map{|char| char.ord.to_s(2).rjust(9,"0")}.join.scan(/.{1,3}/)
+    end
+
+    def is_big_enough_to_store_message?(message)
+        msg_a = Image::get_message_as_binary_array_with_leading_zeros(message)
+        msg_a.length <= @width*@height
+    end
 
     def check_x(x)
         self.check_x_or_y(x, :width)
