@@ -1,6 +1,22 @@
 require 'chunky_png'
 require_relative "Pixel"
 require_relative "Trace"
+require 'pry'
+
+# Properties singleton class
+class Messages
+    # Returns properties.yaml messages
+    def self.get()
+        @@messages ||= YAML.load_file("./properties.yaml")
+    end
+end
+
+class String
+  def add_ending_flag!
+    Messages::get
+    self << Messages::get["cypher"]["ending_flag"]
+  end
+end
 
 class Image
     attr_reader :height, :width, :filename, :pixels
@@ -28,6 +44,7 @@ class Image
 
     def cypher(message)
         Trace::get_logger.info('Image.cypher') { "Cyphering message..." }
+        message.add_ending_flag!
         raise ArgumentError, "Input file is not big enough to store message" unless is_big_enough_to_store_message?(message)
         x = y = 0
         message.split("").map{|char| char.ord.to_s(2).rjust(9,"0").scan(/.{1,3}/)}
@@ -43,21 +60,23 @@ class Image
         self
     end
 
-    def decypher(length=0) #Fix this
+    def decypher
         Trace::get_logger.info('Image.cypher') { "Decyphering message..." }
         
         res_b = res_s = ""
 
         for x in (0...@width)
             for y in (0...@height)
-                res_b += @pixels[[x,y]].r.to_s(2).rjust(8, "0")[7]
-                res_b += @pixels[[x,y]].g.to_s(2).rjust(8, "0")[7]
-                res_b += @pixels[[x,y]].b.to_s(2).rjust(8, "0")[7]
+                res_b += @pixels[[x,y]].r.to_s(2).rjust(8, "0")[7].to_s
+                res_b += @pixels[[x,y]].g.to_s(2).rjust(8, "0")[7].to_s
+                res_b += @pixels[[x,y]].b.to_s(2).rjust(8, "0")[7].to_s
             end
         end
 
         for i in (0...res_b.length).step(8)
-            res_s += [res_b[i..i+7]].pack("b*")
+            chunk = [res_b[i..i+7]][0].to_i(2).chr
+            break if chunk == Messages::get["cypher"]["ending_flag"]
+            res_s += chunk
         end
         
         res_s

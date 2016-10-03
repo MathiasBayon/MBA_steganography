@@ -8,7 +8,8 @@ require 'YAML'
 class Messages
     # Returns properties.yaml messages
     def self.get()
-        @@messages ||= YAML.load_file("./spec/properties.yaml")
+        @@messages ||= YAML.load_file("./properties.yaml")
+        @@messages = @@messages.merge( YAML.load_file("./spec/properties.yaml"))
     end
 end
 
@@ -54,7 +55,7 @@ RSpec.describe Image do
         end
     end
 
-     describe "Methods", :type => :aruba do
+    describe "Methods", :type => :aruba do
         it "Should raise an error if the message to cypher cannot be store within the image" do
             short_message = (0..255).map { ('a'..'z').to_a[rand(26)] }.join
             long_message = (0..250000).map { ('a'..'z').to_a[rand(26)] }.join
@@ -78,8 +79,7 @@ RSpec.describe Image do
         it "Should allow message decyphering" do
             message = Messages::get["rspec"]["test_message"]
             @image.cypher(message)
-            message = @image.decypher
-            $stderr.puts (message) #TODO
+            expect(message).to eq @image.decypher
         end
 
         it "Should be able to write itelf in another file" do
@@ -87,6 +87,14 @@ RSpec.describe Image do
             File.delete(res_filename) if File.exists? res_filename
             @image.write(res_filename.sub(".png", ""))
             expect(File.exists? res_filename).to be true
+        end
+    end
+
+    describe "Open classes extensions" do
+        it "Should be able to add END flag append to any string" do
+            s = "test"
+            s.add_ending_flag!
+            expect(s).to eq "test"+Messages::get["cypher"]["ending_flag"]
         end
     end
 end
