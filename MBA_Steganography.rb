@@ -2,8 +2,10 @@ require_relative "Image"
 
 # Main
 if __FILE__ == $0
-    raise "Usage : #{$0} crypt / decrypt <message file> <image file>" unless ((ARGV.size) == 3 && ["crypt", "decrypt"].include?(ARGV[0]) && ARGV[2].end_with?(".png"))
-    input_file = Image.new(ARGV[2])
-    input_file.cypher("toto")
-    input_file.write("res")
+    raise "Usage : #{$0} <PNG image file> <message file>" unless ((ARGV.size) == 2 && ARGV[0].downcase.end_with?(".png"))
+    input_file = Image.new(ARGV[0])
+    input_file.cypher(ARGV[1])
+    input_file.write(ARGV[0]+".steg")
+
+    puts Image.new(ARGV[0]+".steg.png").decypher
 end

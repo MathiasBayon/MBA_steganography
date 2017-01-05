@@ -1,4 +1,5 @@
-require 'chunky_png'
+require "chunky_png"
+require "YAML"
 require_relative "Pixel"
 require_relative "Trace"
 

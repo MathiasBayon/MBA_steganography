@@ -5,3 +5,4 @@ gem 'logger'
 gem "crypt"
 gem "rspec"
 gem "webrat"
+gem "YAML"
