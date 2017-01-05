@@ -3,4 +3,4 @@ rspec:
   test_result_image_full_path: "./spec/res.png"
   test_source_image_height: 150
   test_source_image_width: 150
-  test_message: "Hello"
+  test_message: "Hello, this is #a# test message"

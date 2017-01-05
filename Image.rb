@@ -1,7 +1,6 @@
 require 'chunky_png'
 require_relative "Pixel"
 require_relative "Trace"
-require 'pry'
 
 # Properties singleton class
 class Messages
@@ -12,9 +11,10 @@ class Messages
 end
 
 class String
-  def add_ending_flag!
+  def add_ending_flag
     Messages::get
-    self << Messages::get["cypher"]["ending_flag"]
+    ending_flag = Messages::get["cypher"]["ending_flag"]
+    self.gsub(ending_flag, " ") + ending_flag
   end
 end
 
@@ -44,12 +44,13 @@ class Image
 
     def cypher(message)
         Trace::get_logger.info('Image.cypher') { "Cyphering message..." }
-        message.add_ending_flag!
-        raise ArgumentError, "Input file is not big enough to store message" unless is_big_enough_to_store_message?(message)
+        message_w_ending_flag = message.add_ending_flag
+        raise ArgumentError, "Input file is not big enough to store message" unless is_big_enough_to_store_message?(message_w_ending_flag)
         x = y = 0
-        message.split("").map{|char| char.ord.to_s(2).rjust(9,"0").scan(/.{1,3}/)}
+        message_w_ending_flag.split("").map{|char| char.ord.to_s(2).rjust(8,"0").scan(/.{1,3}/)}
 
-        Image::get_message_as_binary_array_with_leading_zeros(message).each do |chunk|
+        Image::get_message_as_binary_array_with_leading_zeros(message_w_ending_flag).each do |chunk|
+            @pixels[[x,y]].reset
             @pixels[[x,y]].store(chunk)
             x += 1
             if (x == @width)
@@ -65,8 +66,8 @@ class Image
         
         res_b = res_s = ""
 
-        for x in (0...@width)
-            for y in (0...@height)
+        for y in (0...@height)
+            for x in (0...@width)
                 res_b += @pixels[[x,y]].r.to_s(2).rjust(8, "0")[7].to_s
                 res_b += @pixels[[x,y]].g.to_s(2).rjust(8, "0")[7].to_s
                 res_b += @pixels[[x,y]].b.to_s(2).rjust(8, "0")[7].to_s
@@ -74,7 +75,7 @@ class Image
         end
 
         for i in (0...res_b.length).step(8)
-            chunk = [res_b[i..i+7]][0].to_i(2).chr
+            chunk = res_b[i...i+8].to_i(2).chr
             break if chunk == Messages::get["cypher"]["ending_flag"]
             res_s += chunk
         end
@@ -100,7 +101,7 @@ class Image
     private
 
     def self.get_message_as_binary_array_with_leading_zeros(message)
-        message.split("").map{|char| char.ord.to_s(2).rjust(9,"0")}.join.scan(/.{1,3}/)
+        message.split("").map{|char| char.ord.to_s(2).rjust(8,"0")}.join.scan(/.{1,3}/)
     end
 
     def is_big_enough_to_store_message?(message)

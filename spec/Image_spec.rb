@@ -65,21 +65,10 @@ RSpec.describe Image do
             expect(@image.instance_eval{ is_big_enough_to_store_message?(short_message) }).to be true
         end
 
-        it "Should allow message cyphering within it" do
+        it "Should allow message cyphering and decyphering" do
             message = Messages::get["rspec"]["test_message"]
             @image.cypher(message)
-            message_as_binary_array_with_leading_zero = Image::get_message_as_binary_array_with_leading_zeros(message)
-            for i in (0...message_as_binary_array_with_leading_zero.length) do
-                expect(@image.pixels[[i,0]].r.to_s(2).rjust(8,"0")[7]).to eq message_as_binary_array_with_leading_zero[i][0]
-                expect(@image.pixels[[i,0]].g.to_s(2).rjust(8,"0")[7]).to eq message_as_binary_array_with_leading_zero[i][1]
-                expect(@image.pixels[[i,0]].b.to_s(2).rjust(8,"0")[7]).to eq message_as_binary_array_with_leading_zero[i][2]
-            end
-        end
-
-        it "Should allow message decyphering" do
-            message = Messages::get["rspec"]["test_message"]
-            @image.cypher(message)
-            expect(message).to eq @image.decypher
+            expect(message.gsub(Messages::get["cypher"]["ending_flag"], " ")).to eq @image.decypher
         end
 
         it "Should be able to write itelf in another file" do
@@ -93,8 +82,8 @@ RSpec.describe Image do
     describe "Open classes extensions" do
         it "Should be able to add END flag append to any string" do
             s = "test"
-            s.add_ending_flag!
-            expect(s).to eq "test"+Messages::get["cypher"]["ending_flag"]
+            s_with_ending_flag = s.add_ending_flag
+            expect(s_with_ending_flag).to eq "test"+Messages::get["cypher"]["ending_flag"]
         end
     end
 end

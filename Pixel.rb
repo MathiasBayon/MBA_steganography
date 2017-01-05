@@ -36,6 +36,7 @@ class Pixel
         @r += 1 if three_bits_as_string[0] == "1"
         @g += 1 if three_bits_as_string[1] == "1"
         @b += 1 if three_bits_as_string[2] == "1"
+        self
     end
 
     def reset
