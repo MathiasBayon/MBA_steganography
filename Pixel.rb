@@ -1,6 +1,7 @@
 require 'chunky_png'
 
 class Pixel
+
     attr_accessor :r, :g, :b, :original_r, :original_g, :original_b
 
     def initialize(r, g, b)
@@ -59,4 +60,5 @@ class Pixel
         color_as_octet_array[7] = "0"
         color_as_octet_array.join.to_i(2)
     end
+    
 end

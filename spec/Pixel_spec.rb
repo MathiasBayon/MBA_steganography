@@ -1,7 +1,11 @@
 # @author Mathias Bayon
 
+require 'spec_helper'
+require 'YAML'
+
 require_relative '../Pixel'
 
+# Rspec tests
 RSpec.describe Pixel do
     describe "Initialization" do
         it "should fail if RGB components are not positive and <= 255 integers" do

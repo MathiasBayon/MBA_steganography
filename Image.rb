@@ -5,21 +5,26 @@ require_relative "Trace"
 
 # Properties singleton class
 class Messages
+
     # Returns properties.yaml messages
     def self.get()
         @@messages ||= YAML.load_file("./properties.yaml")
     end
+
 end
 
 class String
+
   def add_ending_flag
     Messages::get
     ending_flag = Messages::get["cypher"]["ending_flag"]
     self.gsub(ending_flag, " ") + ending_flag
   end
+
 end
 
 class Image
+
     attr_reader :height, :width, :filename, :pixels
 
     def initialize(filename)
@@ -59,6 +64,7 @@ class Image
                 y+=1
             end
         end
+
         self
     end
 
@@ -99,6 +105,17 @@ class Image
         self.pixels.each { |pixel| pixel.to_s }
     end
 
+    def self.get_random_image(image_width, image_height)
+        png = ChunkyPNG::Image.new(image_width, image_height, ChunkyPNG::Color::TRANSPARENT)
+        for x in (0...image_height)
+            for y in (0...image_height)
+                png[x,y] = ChunkyPNG::Color.rgba(Random.new.rand(0..255), Random.new.rand(0..255), Random.new.rand(0..255), 255)
+            end
+        end
+        
+        png
+    end
+
     private
 
     def self.get_message_as_binary_array_with_leading_zeros(message)
@@ -110,23 +127,4 @@ class Image
         msg_a.length <= @width*@height
     end
 
-    def check_x(x)
-        self.check_x_or_y(x, :width)
-    end
-
-    def check_y(y)
-        self.check_x_or_y(y, :height)
-    end
-
-    def check_x_and_y(x, y)
-        self.check_x(x)
-        self.check_y(y)
-    end
-
-    def check_x_or_y(x_or_y, height_or_width)
-        raise TypeError, "<x> and <y> must be positive Numeric values" unless x_or_y.is_a? Numeric
-        raise ArgumentError, "<x> and <y> must be positive Numeric values within image size" unless x_or_y > 0
-        raise ArgumentError, "<x> and <y> must be positive Numeric values within image size" unless x_or_y <= @width && height_or_width == :width
-        raise ArgumentError, "<x> and <y> must be positive Numeric values within image size" unless x_or_y <= @height && height_or_width == :height
-    end
 end
