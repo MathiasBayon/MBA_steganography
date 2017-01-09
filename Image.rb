@@ -37,12 +37,12 @@ class Image
         @filename       = filename
         @pixels         = {}
 
-        @width.times do |x|
-            @height.times do |y|
-                @pixels[[x,y]] = Pixel.new(
-                    ChunkyPNG::Color.r(image_contents[x,y]),
-                    ChunkyPNG::Color.g(image_contents[x,y]),
-                    ChunkyPNG::Color.b(image_contents[x,y])
+        @width.times do |w|
+            @height.times do |h|
+                @pixels[[w,h]] = Pixel.new(
+                    ChunkyPNG::Color.r(image_contents[w,h]),
+                    ChunkyPNG::Color.g(image_contents[w,h]),
+                    ChunkyPNG::Color.b(image_contents[w,h])
                 )
             end
         end

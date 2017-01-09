@@ -7,7 +7,9 @@ require_relative '../Pixel'
 
 # Rspec tests
 RSpec.describe Pixel do
+
     describe "Initialization" do
+
         it "should fail if RGB components are not positive and <= 255 integers" do
             expect{Pixel.new("a", "b", "c")}.to raise_error(TypeError)
             expect{Pixel.new(-1, -1, -1)}.to raise_error(ArgumentError)
@@ -20,10 +22,10 @@ RSpec.describe Pixel do
             expect(@pixel.b).not_to be_nil
         end
 
-        it "Should be compressed after initialization" do
-            expect(@pixel.r.to_s(2).rjust(8, "0")).to eq "11111110"
+        it "Should be not be compressed after initialization" do
+            expect(@pixel.r.to_s(2).rjust(8, "0")).to eq "11111111"
             expect(@pixel.g.to_s(2).rjust(8, "0")).to eq "11111110"
-            expect(@pixel.b.to_s(2).rjust(8, "0")).to eq "11111100"
+            expect(@pixel.b.to_s(2).rjust(8, "0")).to eq "11111101"
         end
 
         it "Should allow original value reseting" do
@@ -34,6 +36,7 @@ RSpec.describe Pixel do
             pixel.reset
             expect(pixel).to eql(Pixel.new(255, 254, 253))
         end
+
     end
 
     before(:all) do
@@ -41,6 +44,7 @@ RSpec.describe Pixel do
     end
 
     describe "Methods" do
+
         it "Should be comparable to another pixel, and equal in case of equal RGB components" do
             expect(Pixel.new(255, 254, 253)).to eql @pixel
             expect(Pixel.new(255, 255, 255)).not_to eql @pixel
@@ -88,5 +92,7 @@ RSpec.describe Pixel do
             expect(@pixel.b.to_s(2).rjust(8, "0")).to eq "11111101"
             @pixel.reset
         end
+        
     end
+
 end

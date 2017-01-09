@@ -11,7 +11,7 @@ require_relative 'MBA_steganography'
 task :default => :run
 
 task :run do
-    ruby "ruby MBA_steganography.rb"
+    ruby "MBA_steganography.rb"
 end
 
 task :spec do

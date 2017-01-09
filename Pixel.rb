@@ -10,7 +10,6 @@ class Pixel
         @r = @original_r = r
         @g = @original_g = g 
         @b = @original_b = b
-        self.compress_all
     end
 
     def get_color
@@ -34,6 +33,7 @@ class Pixel
     end
 
     def store(three_bits_as_string)
+        self.compress_all
         @r += 1 if three_bits_as_string[0] == "1"
         @g += 1 if three_bits_as_string[1] == "1"
         @b += 1 if three_bits_as_string[2] == "1"
@@ -44,7 +44,6 @@ class Pixel
         @r = @original_r
         @g = @original_g
         @b = @original_b
-        self.compress_all
     end
 
     protected
