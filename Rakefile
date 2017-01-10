@@ -21,4 +21,5 @@ end
 
 task :clean do
     File.delete(*Dir.glob('./*.log*'))
+    File.delete(*Dir.glob('./spec/*.png'))
 end
