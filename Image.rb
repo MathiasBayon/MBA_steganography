@@ -36,7 +36,6 @@ class Image
     # Initialize Image from filename
     def initialize(filename)
         raise ArgumentError, "File #{filename} does not exist" unless File.exists?(filename)
-        
         Trace::get_logger.info('Image.initialize') { "Initializating Image from file #{filename}..." }
         
         # Load image contents
@@ -73,7 +72,7 @@ class Image
         # Transform message into binary array, segmented in 3 bits subarrays
         x = y = 0
         message_w_ending_flag.split("").map{|char| char.ord.to_s(2).rjust(8,"0").scan(/.{1,3}/)}
-
+        
         # Fetch 3 bits subarrays, and store their content in the least significant bit of each pixel color component
         Image::get_message_as_binary_array_with_leading_zeros(message_w_ending_flag).each do |chunk|
             # Empty least significant bit of pixel color component

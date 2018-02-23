@@ -2,3 +2,5 @@
 *.log
 *.log.*
 *.png
+.DS_Store
+./bin/*
